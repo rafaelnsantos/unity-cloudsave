@@ -126,6 +126,7 @@ UserSchema.methods.GetFloat = function (key) {
 UserSchema.statics.GetScores = async function (top, key) {
 	top = top < 100 && top > 1 ? top : 100
 	var users = await this.find()
+	users = users.sort((a, b) => { return b.GetInt(key) - a.GetInt(key) }).slice(0, top)
 	var scores = []
 	users.map((user) => {
 		scores.push({
@@ -135,7 +136,6 @@ UserSchema.statics.GetScores = async function (top, key) {
 			email: user.GetString('email')
 		})
 	})
-	scores = scores.sort((a, b) => { return b.score - a.score }).slice(0, top)
 	return scores
 }
 // Export the model
