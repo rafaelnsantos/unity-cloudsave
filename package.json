@@ -32,7 +32,8 @@
     "nodemon": "^1.12.1"
   },
   "scripts": {
-    "start": "nodemon index.js --exec \"eslint --fix --ext .js . && babel-node\""
+    "dev": "nodemon index.js --exec \"eslint --fix --ext .js . && babel-node\"",
+    "start": "index.js"
   },
   "repository": {
     "type": "git",
