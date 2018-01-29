@@ -14,8 +14,13 @@ module.exports = function (req, res, next) {
 		if (/^Bearer$/i.test(scheme)) {
 			graph.setAccessToken(credentials)
 
-			graph.get('me?fields=id, email, name', async function (err, res) {
-				if (!err) {
+			graph.get('app?fields=id', async function (err, res) {
+				if (err) return next()
+
+				if (res.id !== (process.env.APP_ID || res.id)) return next()
+
+				graph.get('me?fields=id, email, name', async function (err, res) {
+					if (err) return next()
 					let user = await UserModel.findById(res.id)
 					if (!user) {
 						user = await UserModel.create({_id: res.id})
@@ -24,7 +29,7 @@ module.exports = function (req, res, next) {
 					}
 					req.context.user = user
 					return next()
-				}
+				})
 			})
 		}
 	}
