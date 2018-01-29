@@ -7,7 +7,6 @@ import context from 'context-middleware'
 import middlewares from '@/middlewares'
 import '@/config/db'
 
-const GRAPHQL_PORT = process.env.PORT || 3000
 const app = express()
 
 app.use(context())
@@ -26,4 +25,4 @@ app.use('/graphql',
 app.use('/graphiql', graphiqlExpress({endpointURL: '/graphql'}))
 
 // start server
-app.listen(GRAPHQL_PORT, () => console.log('Listening at port', GRAPHQL_PORT))
+app.listen(process.env.PORT, () => console.log('Listening at port', process.env.PORT))
