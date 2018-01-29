@@ -123,7 +123,7 @@ UserSchema.methods.GetFloat = function (key) {
 	return entry ? entry.value : 0
 }
 
-UserSchema.statics.GetScores = async function (top) {
+UserSchema.statics.GetScores = async function (top, key) {
 	top = top < 100 && top > 1 ? top : 100
 	var users = await this.find()
 	var scores = []
@@ -131,7 +131,7 @@ UserSchema.statics.GetScores = async function (top) {
 		scores.push({
 			id: user.id,
 			name: user.GetString('name'),
-			score: user.GetInt('LastScore'),
+			score: user.GetInt(key),
 			email: user.GetString('email')
 		})
 	})

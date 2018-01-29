@@ -8,5 +8,5 @@ type Score {
 `
 
 exports.query = `
-GetScores(top: Int = 100): [Score]
+GetScores(top: Int = 100, key: String = "score"): [Score]
 `
