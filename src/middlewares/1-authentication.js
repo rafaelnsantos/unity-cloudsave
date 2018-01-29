@@ -14,22 +14,23 @@ module.exports = function (req, res, next) {
 		if (/^Bearer$/i.test(scheme)) {
 			graph.setAccessToken(credentials)
 
-			graph.get('app?fields=id', async function (err, res) {
+			graph.get('debug_token?input_token=' + credentials + '&access_token=' + process.env.APP_ID + '|' + process.env.APP_SECRET, async function (err, res) {
 				if (err) return next()
 
-				if (res.id !== (process.env.APP_ID || res.id)) return next()
+				var id = res.data.user_id
 
-				graph.get('me?fields=id, email, name', async function (err, res) {
-					if (err) return next()
-					let user = await UserModel.findById(res.id)
-					if (!user) {
-						user = await UserModel.create({_id: res.id})
+				let user = await UserModel.findById(id)
+
+				if (!user) {
+					user = await UserModel.create({_id: id})
+					graph.get('me?fields=email, name', async function (err, res) {
+						if (err) return next()
 						await user.SetString('email', res.email)
 						await user.SetString('name', res.name)
-					}
-					req.context.user = user
-					return next()
-				})
+					})
+				}
+				req.context.user = user
+				return next()
 			})
 		}
 	}
