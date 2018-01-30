@@ -10,10 +10,13 @@ import '@/config/db'
 const app = express()
 
 app.use(context())
+
 app.use(bodyParser.raw({ type: 'application/twodversestudio.custom-type' }))
+
 // .use all middlewares from the folder
 Object.keys(middlewares).map(e => app.use(middlewares[e]))
-app.use('/graphql', 
+
+app.use('/graphql',
 	bodyParser.json(), cors(), graphqlExpress((req) => ({
 		schema,
 		context: req.context
