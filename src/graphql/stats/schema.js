@@ -1,8 +1,6 @@
 exports.schema = `
 type Score {
-    id: String
-    name: String
-    email: String
+    user: User
     score: Int
 }
 `

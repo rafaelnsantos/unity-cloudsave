@@ -130,10 +130,8 @@ UserSchema.statics.GetScores = async function (top, key) {
 	var scores = []
 	users.map((user) => {
 		scores.push({
-			id: user.id,
-			name: user.GetString('name'),
 			score: user.GetInt(key),
-			email: user.GetString('email')
+			user: user
 		})
 	})
 	return scores

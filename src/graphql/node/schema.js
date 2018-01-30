@@ -1,6 +1,6 @@
 exports.schema = `
 type Node {
-  id: ID
+  id: String
   createdAt: String
   updatedAt: String
 }
