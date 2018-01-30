@@ -125,7 +125,7 @@ UserSchema.methods.GetFloat = function (key) {
 
 UserSchema.statics.GetScores = async function (top, key) {
 	top = top < 100 && top > 1 ? top : 100
-	var users = await this.find()
+	var users = await this.find().cache(30)
 	users = users.sort((a, b) => { return b.GetInt(key) - a.GetInt(key) }).slice(0, top)
 	var scores = []
 	users.map((user) => {
