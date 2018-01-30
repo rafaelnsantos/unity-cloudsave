@@ -4,6 +4,7 @@
   "description": "Starting point for GraphQL Server.",
   "main": "server.js",
   "dependencies": {
+    "atob": "^2.0.3",
     "babel-cli": "^6.26.0",
     "babel-plugin-root-import": "^5.1.0",
     "babel-preset-env": "^1.6.1",

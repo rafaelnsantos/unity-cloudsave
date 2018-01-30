@@ -10,17 +10,11 @@ import '@/config/db'
 const app = express()
 
 app.use(context())
-
-var corsOptions = {
-	origin: 'https://rafaelnsantos.github.io',
-	optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
-
+app.use(bodyParser.raw({ type: 'application/twodversestudio.custom-type' }))
 // .use all middlewares from the folder
 Object.keys(middlewares).map(e => app.use(middlewares[e]))
-
-app.use('/graphql',
-	bodyParser.json(), cors(corsOptions), graphqlExpress((req) => ({
+app.use('/graphql', 
+	bodyParser.json(), cors(), graphqlExpress((req) => ({
 		schema,
 		context: req.context
 	}))
