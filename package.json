@@ -31,12 +31,13 @@
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
-    "nodemon": "^1.14.11"
+    "nodemon": "^1.14.11",
+    "rimraf": "^2.6.2"
   },
   "scripts": {
     "dev": "nodemon dev.js --exec \"eslint --fix --ext .js . && babel-node\"",
     "start": "node build/index.js",
-    "build": "babel . --ignore node_modules,dev.js,LICENSE,README.md -d build"
+    "build": "rimraf build/ && babel . --ignore node_modules,dev.js -d build"
   },
   "repository": {
     "type": "git",
