@@ -18,6 +18,9 @@ exports.resolver = {
 		},
 		Leaderboard (root, args) {
 			return UserModel.GetLeaderboard(args.top, args.key)
+		},
+		GetScores (root, args) {
+			return UserModel.GetLeaderboard(args.top, args.key)
 		}
 	}
 }
