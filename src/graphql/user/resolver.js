@@ -1,3 +1,5 @@
+import UserModel from '@/models/user'
+
 exports.resolver = {
 	User: {
 		email (root) {
@@ -13,6 +15,9 @@ exports.resolver = {
 	Query: {
 		Me (root, args, context) {
 			return context.user
+		},
+		Leaderboard (root, args) {
+			return UserModel.GetLeaderboard(args.top, args.key)
 		}
 	}
 }
