@@ -14,4 +14,5 @@ type Score {
 exports.query = `
 Me: User
 Leaderboard(top: Int = 100, key: String = "score"): [Score]
+GetScores(top: Int = 100, key: String = "score"): [Score]
 `
