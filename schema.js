@@ -5,7 +5,7 @@ import { graphqls2s } from 'graphql-s2s'
 import { glue } from 'schemaglue'
 
 const { transpileSchema } = graphqls2s
-const { schema, resolver } = glue('src/graphql')
+const { schema, resolver } = glue(process.env.DEV ? 'src/graphql' : 'build/src/graphql')
 
 export default makeExecutableSchema({
 	typeDefs: [transpileSchema(schema)],
