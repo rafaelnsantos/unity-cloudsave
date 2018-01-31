@@ -5,7 +5,8 @@ var UserSchema = new mongoose.Schema({
 	_id: {
 		type: String,
 		unique: true,
-		index: true
+		index: true,
+		required: true
 	},
 	strings: [{
 		_id: {
@@ -127,19 +128,19 @@ UserSchema.statics.GetLeaderboard = async function (top, key) {
 	top = top < 100 && top > 0 ? top : 100
 
 	var users = await this.aggregate([
-		{$project: {user: '$$ROOT', sortfield: '$integers'}},
-		{$unwind: '$sortfield'},
-		{$match: {'sortfield._id': key}},
-		{$sort: {'sortfield.value': -1}},
+		{$project: {score: '$integers'}},
+		{$unwind: '$score'},
+		{$match: {'score._id': key}},
+		{$sort: {'score.value': -1}},
 		{$limit: top},
-		{$project: {user: 1}}
+		{$project: {'score._id': 0}}
 	]).cache()
 
 	var scores = []
 	users.map(async (obj) => {
-		let user = this(obj.user)
+		let user = this({_id: obj._id})
 		scores.push({
-			score: user.GetInt(key),
+			score: obj.score.value,
 			user: user
 		})
 	})
