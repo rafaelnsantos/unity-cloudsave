@@ -1,32 +1,26 @@
-'use strict';
-
-var _user = require('../../models/user');
-
-var _user2 = _interopRequireDefault(_user);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+import UserModel from '@/models/user'
 
 exports.resolver = {
 	User: {
-		email: function email(root) {
-			return root.GetString('email');
+		email (root) {
+			return root.GetString('email')
 		},
-		score: function score(root) {
-			return root.GetInt('score');
+		score (root) {
+			return root.GetInt('score')
 		},
-		money: function money(root) {
-			return root.GetInt('money');
+		money (root) {
+			return root.GetInt('money')
 		}
 	},
 	Query: {
-		Me: function Me(root, args, context) {
-			return context.user;
+		Me (root, args, context) {
+			return context.user
 		},
-		Leaderboard: function Leaderboard(root, args) {
-			return _user2.default.GetLeaderboard(args.top, args.key);
+		Leaderboard (root, args) {
+			return UserModel.GetLeaderboard(args.top, args.key)
 		},
-		GetScores: function GetScores(root, args) {
-			return _user2.default.GetLeaderboard(args.top, args.key);
+		GetScores (root, args) {
+			return UserModel.GetLeaderboard(args.top, args.key)
 		}
 	}
-};
+}
