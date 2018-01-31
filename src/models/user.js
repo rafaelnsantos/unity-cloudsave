@@ -123,18 +123,24 @@ UserSchema.methods.GetFloat = function (key) {
 	return entry ? entry.value : 0
 }
 
-UserSchema.statics.GetScores = async function (top, key) {
-	top = top < 100 && top > 1 ? top : 100
-	var users = await this.find().cache(30)
-	users = users.sort((a, b) => { return b.GetInt(key) - a.GetInt(key) }).slice(0, top)
-	var scores = []
-	users.map((user) => {
-		scores.push({
-			score: user.GetInt(key),
-			user: user
-		})
+UserSchema.statics.GetLeaderboard = async function (top, key) {
+	top = top < 100 && top > 0 ? top : 100
+
+	var users = await this.aggregate([
+		{$project: {user: '$$ROOT', sortfield: '$integers'}},
+		{$unwind: '$sortfield'},
+		{$match: {'sortfield._id': key}},
+		{$sort: {'sortfield.value': -1}},
+		{$limit: top},
+		{$project: {user: 1}}
+	]).cache()
+
+	var list = []
+	users.map(async (user) => {
+		list.push(this(user.user))
 	})
-	return scores
+
+	return list
 }
 // Export the model
 module.exports = mongoose.model('User', UserSchema)
