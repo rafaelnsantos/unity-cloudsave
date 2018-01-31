@@ -37,7 +37,7 @@
   },
   "scripts": {
     "dev": "nodemon dev.js --exec \"eslint --fix --ext .js . && babel-node\"",
-    "start": "node build/index.js",
+    "start": "node index.js",
     "build": "babel . --ignore node_modules,dev.js,LICENSE,README.md -d build"
   },
   "repository": {

@@ -1,18 +1,5 @@
-exports.schema = `
-type User inherits Node {
-    email: String,
-    score: Int
-    money: Int
-}
+"use strict";
 
-type Score {
-    score: Int
-    user: User
-}
-`
+exports.schema = "\ntype User inherits Node {\n    email: String,\n    score: Int\n    money: Int\n}\n\ntype Score {\n    score: Int\n    user: User\n}\n";
 
-exports.query = `
-Me: User
-Leaderboard(top: Int = 100, key: String = "score"): [Score]
-GetScores(top: Int = 100, key: String = "score"): [Score]
-`
+exports.query = "\nMe: User\nLeaderboard(top: Int = 100, key: String = \"score\"): [Score]\nGetScores(top: Int = 100, key: String = \"score\"): [Score]\n";
