@@ -135,12 +135,16 @@ UserSchema.statics.GetLeaderboard = async function (top, key) {
 		{$project: {user: 1}}
 	]).cache()
 
-	var list = []
-	users.map(async (user) => {
-		list.push(this(user.user))
+	var scores = []
+	users.map(async (obj) => {
+		let user = this(obj.user)
+		scores.push({
+			score: user.GetInt(key),
+			user: user
+		})
 	})
 
-	return list
+	return scores
 }
 // Export the model
 module.exports = mongoose.model('User', UserSchema)

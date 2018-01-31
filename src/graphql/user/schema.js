@@ -4,6 +4,11 @@ type User inherits Node {
     score: Int
     money: Int
 }
+
+type Score {
+    score: Int
+    user: User
+}
 `
 
 exports.query = `
