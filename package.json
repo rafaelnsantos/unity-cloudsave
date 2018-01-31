@@ -5,9 +5,6 @@
   "main": "server.js",
   "dependencies": {
     "atob": "^2.0.3",
-    "babel-cli": "^6.26.0",
-    "babel-plugin-root-import": "^5.1.0",
-    "babel-preset-env": "^1.6.1",
     "body-parser": "^1.18.2",
     "cachegoose": "^4.0.1",
     "context-middleware": "^1.0.0",
@@ -24,7 +21,11 @@
     "subscriptions-transport-ws": "^0.9.1"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-eslint": "^8.0.2",
+    "babel-plugin-root-import": "^5.1.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
     "dotenv": "^4.0.0",
     "eslint": "^4.11.0",
     "eslint-config-standard": "^10.2.1",
@@ -36,7 +37,8 @@
   },
   "scripts": {
     "dev": "nodemon dev.js --exec \"eslint --fix --ext .js . && babel-node\"",
-    "start": "babel-node index.js"
+    "start": "node build/index.js",
+    "build": "babel . --ignore node_modules,dev.js,LICENSE,README.md -d build"
   },
   "repository": {
     "type": "git",

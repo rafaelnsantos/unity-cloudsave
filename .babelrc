@@ -4,6 +4,10 @@
     ["babel-plugin-root-import", {
       "rootPathSuffix": "src",
       "rootPathPrefix": "@"
+    }],
+    ["transform-runtime", {
+      "polyfill": false,
+      "regenerator": true
     }]
   ]
 }
