@@ -38,5 +38,3 @@ node_modules
 
 # dotenv
 .env
-
-.build
