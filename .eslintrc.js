@@ -26,7 +26,7 @@ module.exports = {
     'import/default': 2,
     'import/export': 2,
     'indent': ["error", "tab"],
-    "no-tabs": 0
+    'no-tabs': 0,
   },
   'settings': {
     'import/resolver': {
