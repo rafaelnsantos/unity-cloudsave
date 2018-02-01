@@ -227,58 +227,38 @@ UserSchema.methods.GetFloat = function (key) {
 };
 
 UserSchema.statics.GetLeaderboard = function () {
-	var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(top, key) {
+	var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(top, key) {
 		var _this = this;
 
-		var users, scores;
-		return _regenerator2.default.wrap(function _callee6$(_context6) {
+		var results, scores;
+		return _regenerator2.default.wrap(function _callee5$(_context5) {
 			while (1) {
-				switch (_context6.prev = _context6.next) {
+				switch (_context5.prev = _context5.next) {
 					case 0:
 						top = top < 100 && top > 0 ? top : 100;
 
-						_context6.next = 3;
+						_context5.next = 3;
 						return this.aggregate([{ $project: { score: '$integers' } }, { $unwind: '$score' }, { $match: { 'score._id': key } }, { $sort: { 'score.value': -1 } }, { $limit: top }, { $project: { 'score._id': 0 } }]).cache();
 
 					case 3:
-						users = _context6.sent;
+						results = _context5.sent;
 						scores = [];
 
-						users.map(function () {
-							var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(obj) {
-								var user;
-								return _regenerator2.default.wrap(function _callee5$(_context5) {
-									while (1) {
-										switch (_context5.prev = _context5.next) {
-											case 0:
-												user = _this({ _id: obj._id });
+						results.map(function (score) {
+							return scores.push({
+								score: score.score.value,
+								user: _this({ _id: score._id })
+							});
+						});
 
-												scores.push({
-													score: obj.score.value,
-													user: user
-												});
-
-											case 2:
-											case 'end':
-												return _context5.stop();
-										}
-									}
-								}, _callee5, _this);
-							}));
-
-							return function (_x11) {
-								return _ref6.apply(this, arguments);
-							};
-						}());
-
-						return _context6.abrupt('return', scores);
+						return _context5.abrupt('return', scores);
 
 					case 7:
 					case 'end':
-						return _context6.stop();
+						return _context5.stop();
 				}
 			}
-		}, _callee6, this);
+		}, _callee5, this);
 	}));
 
 	return function (_x9, _x10) {

@@ -127,7 +127,7 @@ UserSchema.methods.GetFloat = function (key) {
 UserSchema.statics.GetLeaderboard = async function (top, key) {
 	top = top < 100 && top > 0 ? top : 100
 
-	var users = await this.aggregate([
+	var results = await this.aggregate([
 		{$project: {score: '$integers'}},
 		{$unwind: '$score'},
 		{$match: {'score._id': key}},
@@ -137,13 +137,12 @@ UserSchema.statics.GetLeaderboard = async function (top, key) {
 	]).cache()
 
 	var scores = []
-	users.map(async (obj) => {
-		let user = this({_id: obj._id})
+	results.map(score =>
 		scores.push({
-			score: obj.score.value,
-			user: user
+			score: score.score.value,
+			user: this({_id: score._id})
 		})
-	})
+	)
 
 	return scores
 }

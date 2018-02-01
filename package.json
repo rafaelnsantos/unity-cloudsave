@@ -36,17 +36,12 @@
   },
   "scripts": {
     "dev": "nodemon dev.js --exec \"eslint --fix --ext .js . && babel-node\"",
-    "start": "node build/index.js",
+    "start": "node --optimize_for_size --max_old_space_size=460 --gc_interval=100 build/index.js",
     "build": "rimraf build/ && babel . --ignore node_modules,dev.js -d build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rafaelnsantos/graphql-server.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/rafaelnsantos/graphql-server/issues"
-  },
-  "homepage": "https://github.com/rafaelnsantos/graphql-server#readme"
+  "author": "Rafael Santos",
+  "license": "MIT",
+  "engines": {
+    "node": "8.9.4"
+  }
 }
