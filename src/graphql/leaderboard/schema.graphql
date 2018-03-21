@@ -1,0 +1,14 @@
+type Score {
+    score: Int
+    id: String
+}
+
+type Leaderboard {
+    leaderboard: [Score]
+    position: Int
+    score: Int
+}
+
+type Query {
+    Leaderboard(top: Int = 100, key: String = "score"): Leaderboard
+}

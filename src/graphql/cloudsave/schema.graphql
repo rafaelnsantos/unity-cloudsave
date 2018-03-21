@@ -1,0 +1,13 @@
+type Query {
+    GetString(key: String!) : String
+    GetInt(key: String!) : Int
+    GetBool(key: String!) : Boolean
+    GetFloat(key: String!) : Float
+}
+
+type Mutation {
+    SetString(key: String!, value: String!) : Boolean
+    SetInt(key: String!, value: Int!) : Boolean
+    SetBool(key: String!, value: Boolean!) : Boolean
+    SetFloat(key: String!, value: Float!) : Boolean
+}

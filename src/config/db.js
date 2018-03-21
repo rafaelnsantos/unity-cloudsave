@@ -1,8 +1,7 @@
 import Mongoose from 'mongoose'
 import cachegoose from 'cachegoose'
 
-Mongoose.Promise = global.Promise
-Mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true})
+Mongoose.connect(process.env.MONGODB_URI)
 
 cachegoose(Mongoose, {
 	engine: 'redis', /* If you don't specify the redis engine,      */

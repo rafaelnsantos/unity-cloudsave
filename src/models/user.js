@@ -1,55 +1,81 @@
 import mongoose from 'mongoose'
 
 // Schema defines how the user data will be stored in MongoDB
-var UserSchema = new mongoose.Schema({
-	_id: {
+const UserSchema = new mongoose.Schema({
+	fbid: {
 		type: String,
-		unique: true,
+		required: true,
 		index: true,
+		unique: true
+	},
+	appid: {
+		type: String,
 		required: true
 	},
 	strings: [{
 		_id: {
 			type: String,
-			unique: true,
 			index: true,
 			required: true
 		},
-		value: String
+		value: {
+			type: String,
+			required: true
+		}
 	}],
 	integers: [{
 		_id: {
 			type: String,
-			unique: true,
 			index: true,
 			required: true
 		},
-		value: Number
+		value: {
+			type: Number,
+			required: true
+		}
 	}],
 	booleans: [{
 		_id: {
 			type: String,
-			unique: true,
 			index: true,
 			required: true
 		},
-		value: Boolean
+		value: {
+			type: Boolean,
+			required: true
+		}
 	}],
 	floats: [{
 		_id: {
 			type: String,
-			unique: true,
 			index: true,
 			required: true
 		},
-		value: Number
+		value: {
+			type: Number,
+			required: true
+		}
 	}]
 }, {
 	timestamps: true
 })
 
+UserSchema.statics.FindUserByFacebookId = async function (fbid, appid) {
+	try {
+		let user = await this.findOne({fbid: fbid})
+
+		if (!user) {
+			user = await this.create({fbid: fbid, appid: appid})
+		}
+
+		return user
+	} catch (err) {
+		return err
+	}
+}
+
 UserSchema.methods.SetString = async function (key, value) {
-	var entry = this.strings.id(key)
+	const entry = this.strings.id(key)
 
 	if (entry) {
 		entry.value = value
@@ -57,18 +83,17 @@ UserSchema.methods.SetString = async function (key, value) {
 		this.strings.push({_id: key, value: value})
 	}
 
-	await this.save()
-	return value
+	return save(this)
 }
 
 UserSchema.methods.GetString = function (key) {
-	var entry = this.strings.id(key)
+	const entry = this.strings.id(key)
 
 	return entry ? entry.value : ''
 }
 
 UserSchema.methods.SetInt = async function (key, value) {
-	var entry = this.integers.id(key)
+	const entry = this.integers.id(key)
 
 	if (entry) {
 		entry.value = value
@@ -76,75 +101,80 @@ UserSchema.methods.SetInt = async function (key, value) {
 		this.integers.push({_id: key, value: value})
 	}
 
-	await this.save()
-	return value
+	return save(this)
 }
 
 UserSchema.methods.GetInt = function (key) {
-	var entry = this.integers.id(key)
-
+	const entry = this.integers.id(key)
 	return entry ? entry.value : 0
 }
 
 UserSchema.methods.SetBool = async function (key, value) {
-	var entry = this.booleans.id(key)
+	const entry = this.booleans.id(key)
 
 	if (entry) {
 		entry.value = value
 	} else {
-		this.booleans.push({key: key, value: value})
+		this.booleans.push({_id: key, value: value})
 	}
 
-	await this.save()
-	return value
+	return save(this)
 }
 
 UserSchema.methods.GetBool = function (key) {
-	var entry = this.booleans.id(key)
+	const entry = this.booleans.id(key)
 
 	return entry ? entry.value : false
 }
 
 UserSchema.methods.SetFloat = async function (key, value) {
-	var entry = this.floats.id(key)
+	const entry = this.floats.id(key)
 
 	if (entry) {
 		entry.value = value
 	} else {
-		this.floats.push({key: key, value: value})
+		this.floats.push({_id: key, value: value})
 	}
 
-	await this.save()
-	return value
+	return save(this)
 }
 
 UserSchema.methods.GetFloat = function (key) {
-	var entry = this.floats.id(key)
+	const entry = this.floats.id(key)
 
 	return entry ? entry.value : 0
 }
 
-UserSchema.statics.GetLeaderboard = async function (top, key) {
+UserSchema.methods.GetLeaderboard = async function (top, key) {
 	top = top < 100 && top > 0 ? top : 100
+	try {
+		var results = await this.model('User').aggregate([
+			{$match: {'appid': this.appid}},
+			{$project: {score: '$integers', id: '$fbid'}},
+			{$unwind: '$score'},
+			{$match: {'score._id': key}},
+			{$sort: {'score.value': -1}},
+			{$project: {'score': '$score.value', 'id': 1, '_id': 0}}
+		]).cache()
+	} catch (err) {
+		return err
+	}
 
-	var results = await this.aggregate([
-		{$project: {score: '$integers'}},
-		{$unwind: '$score'},
-		{$match: {'score._id': key}},
-		{$sort: {'score.value': -1}},
-		{$limit: top},
-		{$project: {'score._id': 0}}
-	]).cache()
+	results.position = results.map((entry) => entry.id).indexOf(this.fbid) + 1
+	results.score = results[results.position - 1].score
+	results.leaderboard = results.slice(0, top)
 
-	var scores = []
-	results.map(score =>
-		scores.push({
-			score: score.score.value,
-			user: this({_id: score._id})
-		})
-	)
-
-	return scores
+	return results
 }
+
+async function save (user) {
+	try {
+		await user.save()
+		return true
+	} catch (err) {
+		return false
+	}
+}
+
 // Export the model
 module.exports = mongoose.model('User', UserSchema)
