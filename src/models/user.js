@@ -147,9 +147,21 @@ UserSchema.methods.GetFloat = function (key) {
 
 UserSchema.methods.GetLeaderboard = async function (top, key) {
 	top = top < 100 && top > 0 ? top : 100
+
+	const results = await this.model('User').Leaderboard(this.appid, key)
+
+	let response = {}
+	response.position = results.map((entry) => entry.id).indexOf(this.fbid) + 1
+	response.score = results[results.position - 1].score
+	response.leaderboard = results.slice(0, top)
+
+	return response
+}
+
+UserSchema.statics.Leaderboard = async function (appid, key) {
 	try {
-		var results = await this.model('User').aggregate([
-			{$match: {'appid': this.appid}},
+		var results = await this.aggregate([
+			{$match: {'appid': appid}},
 			{$project: {score: '$integers', id: '$fbid'}},
 			{$unwind: '$score'},
 			{$match: {'score._id': key}},
@@ -159,11 +171,6 @@ UserSchema.methods.GetLeaderboard = async function (top, key) {
 	} catch (err) {
 		return err
 	}
-
-	results.position = results.map((entry) => entry.id).indexOf(this.fbid) + 1
-	results.score = results[results.position - 1].score
-	results.leaderboard = results.slice(0, top)
-
 	return results
 }
 
