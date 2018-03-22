@@ -12,7 +12,7 @@ module.exports = async (req, res, next) => {
 		return next()
 	}
 
-	if (!req.headers.authorization) return res.sendStatus(500)
+	if (!req.headers.authorization) return next()
 
 	const parts = req.headers.authorization.split(' ')
 
