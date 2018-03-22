@@ -11,4 +11,5 @@ type Leaderboard {
 
 type Query {
     Leaderboard(top: Int = 100, key: String = "score"): Leaderboard
+    PublicLeaderboard(appid: String!, key: String!): [Score]
 }
