@@ -1,5 +1,9 @@
 sudo: required
 
+addons:
+  sonarcloud:
+    organization: "rafaelnsantos-github"
+
 language: node_js
 
 node_js:
@@ -19,5 +23,6 @@ cache:
   - node_modules
 
 script:
+- sonar-scanner -Dsonar.projectKey=memory-cloud -Dsonar.organization=rafaelnsantos-github -Dsonar.sources=./src -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
 - eslint *.js --debug
 - npm run build
