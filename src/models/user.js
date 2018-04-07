@@ -152,9 +152,8 @@ UserSchema.methods.GetLeaderboard = async function (top, key) {
 
 	let response = {}
 	response.position = results.map((entry) => entry.id).indexOf(this.fbid) + 1
-	response.score = results[results.position - 1].score
+	response.score = results.filter((entry) => entry.id === this.fbid)[0].score
 	response.leaderboard = results.slice(0, top)
-
 	return response
 }
 
@@ -168,10 +167,10 @@ UserSchema.statics.Leaderboard = async function (appid, key) {
 			{$sort: {'score.value': -1}},
 			{$project: {'score': '$score.value', 'id': 1, '_id': 0}}
 		]).cache()
+		return results
 	} catch (err) {
 		return err
 	}
-	return results
 }
 
 async function save (user) {
