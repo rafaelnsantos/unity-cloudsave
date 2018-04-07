@@ -7,8 +7,7 @@
 
 Set the enviroment variables: 
 
-![capturar](https://user-images.githubusercontent.com/4512966/38452575-47ca7bcc-3a1d-11e8-9fc3-aecc3e02cd5b.JPG)
-
+![capturar](https://user-images.githubusercontent.com/4512966/38453267-21b3e516-3a29-11e8-94ad-59f46c40cacf.JPG)
 
 For each app is needed:
 
