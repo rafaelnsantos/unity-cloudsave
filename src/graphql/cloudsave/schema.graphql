@@ -1,13 +1,61 @@
+type State {
+    integers: [IntegerDict]
+    floats: [FloatDict]
+    booleans: [BooleanDict]
+    strings: [StringDict]
+}
+
+input StateInput {
+    integers: [IntegerDictInput]
+    floats: [FloatDictInput]
+    booleans: [BooleanDictInput]
+    strings: [StringDictInput]
+}
+
+type StringDict {
+    _id: String
+    value: String
+}
+
+type IntegerDict {
+    _id: String
+    value: Int
+}
+
+type FloatDict {
+    _id: String
+    value: Float
+}
+
+type BooleanDict {
+    _id: String
+    value: Boolean
+}
+
+input StringDictInput {
+    _id: String!
+    value: String!
+}
+
+input IntegerDictInput {
+    _id: String!
+    value: Int!
+}
+
+input FloatDictInput {
+    _id: String!
+    value: Float!
+}
+
+input BooleanDictInput {
+    _id: String!
+    value: Boolean!
+}
+
 type Query {
-    GetString(key: String!) : String
-    GetInt(key: String!) : Int
-    GetBool(key: String!) : Boolean
-    GetFloat(key: String!) : Float
+    Load : State
 }
 
 type Mutation {
-    SetString(key: String!, value: String!) : Boolean
-    SetInt(key: String!, value: Int!) : Boolean
-    SetBool(key: String!, value: Boolean!) : Boolean
-    SetFloat(key: String!, value: Float!) : Boolean
+    Save(integers: [IntegerDictInput], floats: [FloatDictInput], strings: [StringDictInput], booleans: [BooleanDictInput]) : Boolean
 }

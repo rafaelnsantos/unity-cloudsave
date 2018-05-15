@@ -23,7 +23,7 @@ function startApp () {
 	app.use(cors())
 
 	// insert body in req
-	app.use(bodyParser.raw({ type: 'application/memorycloud.custom-type' }))
+	// app.use(bodyParser.raw({ type: 'application/memorycloud.custom-type' }))
 	app.use(bodyParser.json()) // used for tests with graphiQL app
 
 	// app.use() all middlewares from the folder

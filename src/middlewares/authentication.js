@@ -5,7 +5,7 @@ module.exports = async (req, res, next) => {
 	const appId = req.headers.appid
 
 	if (req.headers.teste === 'true' && process.env.NODE_ENV !== 'production') {
-		const user = await UserModel.FindUserByFacebookId(req.headers.fbid, appId)
+		const user = await UserModel.FindOrCreateUser(req.headers.fbid, appId)
 		if (!user) return res.sendStatus(500)
 		req.context.user = user
 
@@ -28,7 +28,7 @@ module.exports = async (req, res, next) => {
 
 		const userId = result.data.user_id
 
-		const user = await UserModel.FindUserByFacebookId(userId, appId)
+		const user = await UserModel.FindOrCreateUser(userId, appId)
 		if (!user) return res.sendStatus(500)
 		req.context.user = user
 

@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 
-// Schema defines how the user data will be stored in MongoDB
 const UserSchema = new mongoose.Schema({
 	fbid: {
 		type: String,
@@ -60,7 +59,7 @@ const UserSchema = new mongoose.Schema({
 	timestamps: true
 })
 
-UserSchema.statics.FindUserByFacebookId = async function (fbid, appid) {
+UserSchema.statics.FindOrCreateUser = async function (fbid, appid) {
 	try {
 		let user = await this.findOne({fbid: fbid})
 
@@ -74,113 +73,39 @@ UserSchema.statics.FindUserByFacebookId = async function (fbid, appid) {
 	}
 }
 
-UserSchema.methods.SetString = async function (key, value) {
-	const entry = this.strings.id(key)
-
-	if (entry) {
-		entry.value = value
-	} else {
+UserSchema.methods.UpsertString = async function (key, value) {
+	try {
+		this.strings.id(key).value = value
+	} catch (err) {
 		this.strings.push({_id: key, value: value})
 	}
-
-	return save(this)
 }
 
-UserSchema.methods.GetString = function (key) {
-	const entry = this.strings.id(key)
-
-	return entry ? entry.value : ''
-}
-
-UserSchema.methods.SetInt = async function (key, value) {
-	const entry = this.integers.id(key)
-
-	if (entry) {
-		entry.value = value
-	} else {
+UserSchema.methods.UpsertInt = async function (key, value) {
+	try {
+		this.integers.id(key).value = value
+	} catch (err) {
 		this.integers.push({_id: key, value: value})
 	}
-
-	return save(this)
 }
 
-UserSchema.methods.GetInt = function (key) {
-	const entry = this.integers.id(key)
-	return entry ? entry.value : 0
-}
-
-UserSchema.methods.SetBool = async function (key, value) {
-	const entry = this.booleans.id(key)
-
-	if (entry) {
-		entry.value = value
-	} else {
+UserSchema.methods.UpsertBool = async function (key, value) {
+	try {
+		this.booleans.id(key).value = value
+	} catch (err) {
 		this.booleans.push({_id: key, value: value})
 	}
-
-	return save(this)
 }
 
-UserSchema.methods.GetBool = function (key) {
-	const entry = this.booleans.id(key)
-
-	return entry ? entry.value : false
-}
-
-UserSchema.methods.SetFloat = async function (key, value) {
-	const entry = this.floats.id(key)
-
-	if (entry) {
-		entry.value = value
-	} else {
+UserSchema.methods.UpsertFloat = async function (key, value) {
+	try {
+		this.floats.id(key).value = value
+	} catch (err) {
 		this.floats.push({_id: key, value: value})
 	}
-
-	return save(this)
 }
 
-UserSchema.methods.GetFloat = function (key) {
-	const entry = this.floats.id(key)
-
-	return entry ? entry.value : 0
+UserSchema.methods.GetState = function () {
+	return {integers: this.integers, floats: this.floats, strings: this.strings, booleans: this.booleans}
 }
-
-UserSchema.methods.GetLeaderboard = async function (top, key) {
-	top = top < 100 && top > 0 ? top : 100
-
-	const results = await this.model('User').Leaderboard(this.appid, key)
-
-	let response = {}
-	response.position = results.map((entry) => entry.id).indexOf(this.fbid) + 1
-	response.score = results.filter((entry) => entry.id === this.fbid)[0].score
-	response.leaderboard = results.slice(0, top)
-	return response
-}
-
-UserSchema.statics.Leaderboard = async function (appid, key) {
-	try {
-		var results = await this.aggregate([
-			{$match: {'appid': appid}},
-			{$project: {score: '$integers', id: '$fbid'}},
-			{$unwind: '$score'},
-			{$match: {'score._id': key}},
-			{$sort: {'score.value': -1}},
-			{$project: {'score': '$score.value', 'id': 1, '_id': 0}}
-		]).cache()
-		return results
-	} catch (err) {
-		return err
-	}
-}
-
-async function save (user) {
-	try {
-		await user.save()
-		return true
-	} catch (err) {
-		return false
-	}
-}
-
-// Export the model
 module.exports = mongoose.model('User', UserSchema)
