@@ -1,5 +1,3 @@
-import UserModel from '@/models/user'
-
 exports.resolver = {
 	Leaderboard: {
 		position ({leaderboard}, {}, {user}) {
@@ -13,8 +11,8 @@ exports.resolver = {
 		}
 	},
 	Query: {
-		async Leaderboard (_, {top, key}, {user}) {
-			const leaderboard = await UserModel.aggregate([
+		async Leaderboard (db, {top, key}, {user}) {
+			const leaderboard = await db.model('User').aggregate([
 				{$match: {'appid': user.appid}},
 				{$project: {score: '$integers', id: '$fbid'}},
 				{$unwind: '$score'},
@@ -28,9 +26,9 @@ exports.resolver = {
 			response.top = top < 100 && top > 0 ? top : 100
 			return response
 		},
-		PublicLeaderboard (_, {appid, key, top}) {
+		PublicLeaderboard (db, {appid, key, top}) {
 			top = top < 100 && top > 0 ? top : 100
-			return UserModel.aggregate([
+			return db.model('User').aggregate([
 				{$match: {'appid': appid}},
 				{$project: {score: '$integers', id: '$fbid'}},
 				{$unwind: '$score'},

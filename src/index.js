@@ -1,19 +1,17 @@
 import express from 'express'
-import { graphqlExpress } from 'graphql-server-express'
+import {graphqlExpress} from 'graphql-server-express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import schema from './schema'
 import context from 'context-middleware'
 import middlewares from '@/middlewares'
 import throng from 'throng'
+import db from '@/config/db'
 
 // variavel usada para determinar quantidade de instancias
 var WORKERS = process.env.WEB_CONCURRENCY || 1
 
-function startApp () {
-	// connect db
-	require('@/config/db')
-
+async function startApp() {
 	const app = express()
 
 	// insert context in req
@@ -33,7 +31,8 @@ function startApp () {
 	app.use('/graphql',
 		graphqlExpress((req) => ({
 			schema,
-			context: req.context
+			context: req.context,
+			rootValue: db
 		}))
 	)
 

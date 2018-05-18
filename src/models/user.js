@@ -7,8 +7,9 @@ const UserSchema = new mongoose.Schema({
 		index: true,
 		unique: true
 	},
-	appid: {
-		type: String,
+	game: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Game',
 		required: true
 	},
 	strings: [{
@@ -54,17 +55,28 @@ const UserSchema = new mongoose.Schema({
 			type: Number,
 			required: true
 		}
+	}],
+	achievements: [{
+		_id: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Achievement',
+			required: true
+		},
+		completed: {
+			type: Date,
+			default: Date.now
+		}
 	}]
 }, {
 	timestamps: true
 })
 
-UserSchema.statics.FindOrCreateUser = async function (fbid, appid) {
+UserSchema.statics.FindOrCreate = async function (fbid, game) {
 	try {
 		let user = await this.findOne({fbid: fbid})
 
 		if (!user) {
-			user = await this.create({fbid: fbid, appid: appid})
+			user = await this.create({fbid: fbid, game: game.id})
 		}
 
 		return user
@@ -105,7 +117,4 @@ UserSchema.methods.UpsertFloat = async function (key, value) {
 	}
 }
 
-UserSchema.methods.GetState = function () {
-	return {integers: this.integers, floats: this.floats, strings: this.strings, booleans: this.booleans}
-}
 module.exports = mongoose.model('User', UserSchema)

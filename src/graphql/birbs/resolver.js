@@ -1,5 +1,3 @@
-import UserModel from '@/models/user'
-
 exports.resolver = {
 	LeaderboardBirb: {
 		position ({leaderboard}, {}, {user}) {
@@ -10,8 +8,8 @@ exports.resolver = {
 		}
 	},
 	Query: {
-		async GetLeaderboardBirb (_, {top, appid}) {
-			const leaderboard = await UserModel.aggregate([
+		async GetLeaderboardBirb (db, {top, appid}) {
+			const leaderboard = await db.model('User').aggregate([
 				{$match: {'appid': appid}},
 				{$project: {score: '$floats', id: '$fbid', mult: '$integers'}},
 				{$unwind: '$score'},
