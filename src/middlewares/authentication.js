@@ -24,7 +24,7 @@ module.exports = async(req, res, next) => {
 
 	// TESTE
 	if (req.headers.teste === 'true' && process.env.NODE_ENV !== 'production') {
-		const game = await GameModel.findOne({appid: appId}).select('key').cache(0)
+		const game = await GameModel.findOne({appid: appId}).select('key')
 		const user = await UserModel.FindOrCreate(req.headers.fbid, game)
 		if (!user) return res.sendStatus(500)
 		req.context.user = user
@@ -44,7 +44,7 @@ module.exports = async(req, res, next) => {
 
 	if (!/^Bearer$/i.test(scheme)) return res.sendStatus(500)
 
-	const game = await GameModel.findOne({appid: appId}).select('key').cache(0)
+	const game = await GameModel.findOne({appid: appId}).select('key')
 
 	graph.get('debug_token?input_token=' + credentials + '&access_token=' + appId + '|' + game.key, async(err, result) => {
 		if (err) return res.sendStatus(500)
