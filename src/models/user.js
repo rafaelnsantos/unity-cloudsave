@@ -75,7 +75,7 @@ UserSchema.statics.FindOrCreate = async function (fbid, game) {
 	try {
 		let user = await this.findOne({fbid: fbid})
 		if (!user) {
-			user = await this.create({fbid: fbid, game: game._id})
+			user = await this.create({fbid: fbid, game: game})
 		}
 
 		return user
