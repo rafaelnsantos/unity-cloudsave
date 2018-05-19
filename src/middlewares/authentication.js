@@ -45,14 +45,13 @@ module.exports = async(req, res, next) => {
 	if (!/^Bearer$/i.test(scheme)) return res.sendStatus(500)
 
 	const game = await GameModel.findOne({appid: appId}).select('key')
-	console.log(game)
+
 	graph.get('debug_token?input_token=' + credentials + '&access_token=' + appId + '|' + game.key, async(err, result) => {
 		if (err) return res.sendStatus(500)
 
 		const userId = result.data.user_id
 
 		const user = await UserModel.FindOrCreate(userId, game._id)
-		console.log(user)
 		if (!user) return res.sendStatus(500)
 		req.context.user = user
 
