@@ -13,7 +13,7 @@ exports.resolver = {
 	Query: {
 		async Leaderboard (db, {top, key}, {user}) {
 			const leaderboard = await db.model('User').aggregate([
-				{$match: {'appid': user.appid}},
+				{$match: {'game': user.game}},
 				{$project: {score: '$integers', id: '$fbid'}},
 				{$unwind: '$score'},
 				{$match: {'score._id': key}},

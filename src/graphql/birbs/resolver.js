@@ -8,9 +8,9 @@ exports.resolver = {
 		}
 	},
 	Query: {
-		async GetLeaderboardBirb (db, {top, appid}) {
+		async GetLeaderboardBirb (db, {top}, {user}) {
 			const leaderboard = await db.model('User').aggregate([
-				{$match: {'appid': appid}},
+				{$match: {'game': user.game}},
 				{$project: {score: '$floats', id: '$fbid', mult: '$integers'}},
 				{$unwind: '$score'},
 				{$match: {'score._id': 'currentSeed'}},
