@@ -1,10 +1,15 @@
 import AchivementModel from '@/models/achievement'
+import UserModel from '@/models/user'
 
 exports.resolver = {
 	Game: {
-		async achievements (game) {
+		achievements (game) {
 			return AchivementModel.find({game: game._id})
+		},
+		players (game) {
+			return UserModel.find({game: game._id}).count()
 		}
+
 	},
 	Query: {
 		me (db, args, {admin}) {
@@ -13,8 +18,8 @@ exports.resolver = {
 		games (db, args, {admin}) {
 			return db.model('Game').find({admin: admin}).select('appid key')
 		},
-		async game (db, {appid}, {admin}) {
-			return await db.model('Game').findOne({admin: admin, appid: appid})
+		game (db, {appid}, {admin}) {
+			return db.model('Game').findOne({admin: admin, appid: appid})
 		},
 
 	},

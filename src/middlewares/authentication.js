@@ -4,7 +4,7 @@ import AdminModel from '@/models/admin'
 
 import graph from 'fbgraph'
 
-module.exports = async(req, res, next) => {
+module.exports = async (req, res, next) => {
 	const appId = req.headers.appid
 
 	// ADMIN AUTH
@@ -22,19 +22,9 @@ module.exports = async(req, res, next) => {
 		}
 	}
 
-	// TESTE
-	if (req.headers.teste === 'true' && process.env.NODE_ENV !== 'production') {
-		const game = await GameModel.findOne({appid: appId}).select('key')
-		const user = await UserModel.FindOrCreate(req.headers.fbid, game._id)
-		if (!user) return res.sendStatus(500)
-		req.context.user = user
-
-		return next()
-	}
-
+	// UNITY AUTH
 	if (!req.headers.authorization) return next()
 
-	// GAME AUTH
 	const parts = req.headers.authorization.split(' ')
 
 	if (parts.length !== 2) return res.sendStatus(500)
@@ -44,9 +34,9 @@ module.exports = async(req, res, next) => {
 
 	if (!/^Bearer$/i.test(scheme)) return res.sendStatus(500)
 
-	const game = await GameModel.findOne({appid: appId}).select('key')
+	const game = await GameModel.findOne({appid: appId}).select('key appid')
 
-	graph.get('debug_token?input_token=' + credentials + '&access_token=' + appId + '|' + game.key, async(err, result) => {
+	graph.get('debug_token?input_token=' + credentials + '&access_token=' + game.GetAppToken(), async(err, result) => {
 		if (err) return res.sendStatus(500)
 
 		const userId = result.data.user_id
@@ -54,6 +44,7 @@ module.exports = async(req, res, next) => {
 		const user = await UserModel.FindOrCreate(userId, game._id)
 		if (!user) return res.sendStatus(500)
 		req.context.user = user
+		req.context.token = credentials
 
 		next()
 	})

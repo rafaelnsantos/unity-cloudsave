@@ -1,11 +1,11 @@
 exports.resolver = {
 	Query: {
-		Load(_, {}, {user}) {
+		Load(db, params, {user}) {
 			return user
 		}
 	},
 	Mutation: {
-		async Save (_, {integers, floats, booleans, strings}, {user}) {
+		async Save (db, {integers, floats, booleans, strings}, {user}) {
 			try {
 				if (integers) integers.map(({_id, value}) => user.UpsertInt(_id, value))
 				if (floats) floats.map(({_id, value}) => user.UpsertFloat(_id, value))

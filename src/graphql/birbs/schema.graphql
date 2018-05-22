@@ -10,5 +10,5 @@ type LeaderboardBirb {
 }
 
 type Query {
-    GetLeaderboardBirb(appid: String = "1610374462351349" top: Int = 100): LeaderboardBirb
+    GetLeaderboardBirb(top: Int = 100): LeaderboardBirb
 }

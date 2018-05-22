@@ -7,7 +7,7 @@ exports.resolver = {
 		}
 	},
 	Mutation: {
-		async createUser (db, {credentials}, {admin}) {
+		async createUser (db, {credentials}) {
 			try {
 				const admin = await db.model('Admin').create(credentials)
 				return jwt.sign(admin.toJSON(), process.env.SECRET)

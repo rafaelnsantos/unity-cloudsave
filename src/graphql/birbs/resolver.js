@@ -1,6 +1,6 @@
 exports.resolver = {
 	LeaderboardBirb: {
-		position ({leaderboard}, {}, {user}) {
+		position ({leaderboard}, params, {user}) {
 			return leaderboard.map((entry) => entry.id).indexOf(user.fbid) + 1
 		},
 		leaderboard ({leaderboard, top}){
