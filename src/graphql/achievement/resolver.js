@@ -7,7 +7,7 @@ exports.resolver = {
 				achievements.find(achievement => achievement._id.equals(completedAchievement._id)).completed = completedAchievement.completed.toUTCString()
 			})
 
-			achievements = achievements.sort((a, b) => {
+			return achievements.sort((a, b) => {
 				if (!a.completed) {
 					return 1;
 				}
@@ -16,8 +16,6 @@ exports.resolver = {
 				}
 				return a.completed < b.completed
 			})
-
-			return achievements
 		}
 	},
 	Mutation: {
